@@ -12,6 +12,7 @@ const app = new PIXI.Application({
   resolution: 3,
   autoDensity: true,
 })
+
 document.body.appendChild(app.view)
 
 function resizeHandler() {
@@ -34,13 +35,14 @@ app.loader
   .add('assets/crown.png', 'assets/crown.png')
   .add('assets/diamond.png', 'assets/diamond.png')
   .add('assets/seven.png', 'assets/seven.png')
+  .add('spritesheet', 'assets/coin.json')
   .load(onAssetsLoaded)
 
 const REEL_WIDTH = 140
 const SYMBOL_SIZE = 150
 
 // onAssetsLoaded handler builds the example.
-function onAssetsLoaded() {
+function onAssetsLoaded(loader, resources) {
   // Create different slot symbols.
   const slotTextures = [
     PIXI.Texture.from('assets/clover.png'),
@@ -56,6 +58,77 @@ function onAssetsLoaded() {
     credit: 5,
     bet: 1,
     betMax: 5,
+  }
+
+  const textures = []
+  const coinsContainer = new PIXI.Container()
+
+  for (let i = 0; i < 30; i++) {
+    const framekey = `Silver_${i + 1}.png`
+    const texture = PIXI.Texture.from(framekey)
+    const time = resources.spritesheet.data.frames[framekey].duration
+    textures.push({ texture, time })
+  }
+
+  function updateBunny(bunny) {
+    bunny.y += bunny.vy
+  }
+
+  function createBunny() {
+    const bunny = new PIXI.AnimatedSprite(textures)
+    bunny.anchor.set(0.5)
+    bunny.update = updateBunny
+
+    const speed = 600.0 // px per second
+    bunny.vy = speed / 60.0
+    bunny.position.set(
+      Math.random() * gameWidth,
+      -2000 + (Math.random() * gameHeight) / 3,
+    )
+    bunny.anchor.set(0.5, 0.5)
+    bunny.scale.set(0.2)
+
+    let i = Math.floor(Math.random() * 30)
+    const firePlay = () => {
+      bunny.gotoAndStop(i)
+      i++
+      if (i == 30) i = 0 // At the last frame, go back to the first frame
+    }
+    setInterval(firePlay, 40)
+
+    return bunny
+  }
+
+  const generateSpinner = (position) => {
+    const container = new PIXI.Container()
+    container.position = position
+    game.addChild(container)
+
+    const halfCircle = new PIXI.Graphics()
+    halfCircle.beginFill(0xff0000)
+    halfCircle.lineStyle(10, 0xffffff)
+    halfCircle.arc(0, 0, reelContainer.width, 0, Math.PI)
+    halfCircle.endFill()
+    halfCircle.position.set(reelContainer.width / 2, (SYMBOL_SIZE * 1.6) / 2)
+
+    const rectangle = new PIXI.Graphics()
+    rectangle.lineStyle(10, 0xfff89a, 1)
+    rectangle.drawRoundedRect(0, 0, reelContainer.width, SYMBOL_SIZE * 1.6, 10)
+    rectangle.endFill()
+    rectangle.mask = halfCircle
+
+    container.addChild(rectangle)
+    container.addChild(halfCircle)
+
+    let phase = 0
+
+    return (delta) => {
+      // Update phase
+      phase += delta / 6
+      phase %= Math.PI * 2
+
+      halfCircle.rotation = phase
+    }
   }
 
   // Build the reels
@@ -120,6 +193,8 @@ function onAssetsLoaded() {
   let onTick = []
   let interactiveElements = []
 
+  app.stage.addChild(coinsContainer)
+
   const betButton = new GameButton(50, 220, 'BET\nONE', 0x76b5c5, 1)
   betButton.makeButton()
   interactiveElements.push(betButton)
@@ -174,7 +249,7 @@ function onAssetsLoaded() {
       onTick[0] = null
       app.stage.removeChild(game)
       game = new PIXI.Container()
-      app.stage.addChild(game)
+      app.stage.addChildAt(game, 1)
     }
 
     for (let i = 0; i < reels.length; i++) {
@@ -230,6 +305,11 @@ function onAssetsLoaded() {
           ),
         ]
       }, time / 3)
+
+      for (let i = 0; i < state.bet; i++) {
+        coinsContainer.addChild(createBunny())
+      }
+
       state.credit += state.bet
     } else {
       state.credit - state.bet <= 0
@@ -244,38 +324,6 @@ function onAssetsLoaded() {
     }, time)
   }
 
-  const generateSpinner = (position) => {
-    const container = new PIXI.Container()
-    container.position = position
-    game.addChild(container)
-
-    const halfCircle = new PIXI.Graphics()
-    halfCircle.beginFill(0xff0000)
-    halfCircle.lineStyle(10, 0xffffff)
-    halfCircle.arc(0, 0, reelContainer.width, 0, Math.PI)
-    halfCircle.endFill()
-    halfCircle.position.set(reelContainer.width / 2, (SYMBOL_SIZE * 1.6) / 2)
-
-    const rectangle = new PIXI.Graphics()
-    rectangle.lineStyle(10, 0xfff89a, 1)
-    rectangle.drawRoundedRect(0, 0, reelContainer.width, SYMBOL_SIZE * 1.6, 10)
-    rectangle.endFill()
-    rectangle.mask = halfCircle
-
-    container.addChild(rectangle)
-    container.addChild(halfCircle)
-
-    let phase = 0
-
-    return (delta) => {
-      // Update phase
-      phase += delta / 6
-      phase %= Math.PI * 2
-
-      halfCircle.rotation = phase
-    }
-  }
-
   // Reels done handler.
   function reelsComplete() {
     running = false
@@ -287,6 +335,8 @@ function onAssetsLoaded() {
       running = true
       return
     }
+
+    coinsContainer.children.forEach(updateBunny)
     // Update the slots.
     if (onTick[0]) {
       onTick.forEach((cb) => {
@@ -365,7 +415,6 @@ function lerp(a1, a2, t) {
 }
 
 // Backout function from tweenjs.
-// https://github.com/CreateJS/TweenJS/blob/master/src/tweenjs/Ease.js
 function backout(amount) {
   return (t) => --t * t * ((amount + 1) * t + amount) + 1
 }

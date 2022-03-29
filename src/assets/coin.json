@@ -1,0 +1,255 @@
+{"frames": {
+
+"Silver_1.png":
+{
+	"frame": {"x":1,"y":569,"w":280,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":280,"h":282},
+	"sourceSize": {"w":280,"h":282}
+},
+"Silver_2.png":
+{
+	"frame": {"x":565,"y":569,"w":252,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":252,"h":282},
+	"sourceSize": {"w":252,"h":282}
+},
+"Silver_3.png":
+{
+	"frame": {"x":725,"y":1138,"w":214,"h":283},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":214,"h":283},
+	"sourceSize": {"w":214,"h":283}
+},
+"Silver_4.png":
+{
+	"frame": {"x":285,"y":1707,"w":131,"h":282},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":131,"h":282},
+	"sourceSize": {"w":131,"h":282}
+},
+"Silver_5.png":
+{
+	"frame": {"x":285,"y":1,"w":282,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":282,"h":282},
+	"sourceSize": {"w":282,"h":282}
+},
+"Silver_6.png":
+{
+	"frame": {"x":567,"y":285,"w":280,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":280,"h":282},
+	"sourceSize": {"w":280,"h":282}
+},
+"Silver_7.png":
+{
+	"frame": {"x":537,"y":853,"w":252,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":252,"h":282},
+	"sourceSize": {"w":252,"h":282}
+},
+"Silver_8.png":
+{
+	"frame": {"x":687,"y":1423,"w":214,"h":283},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":214,"h":283},
+	"sourceSize": {"w":214,"h":283}
+},
+"Silver_9.png":
+{
+	"frame": {"x":569,"y":1708,"w":131,"h":282},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":131,"h":282},
+	"sourceSize": {"w":131,"h":282}
+},
+"Silver_10.png":
+{
+	"frame": {"x":952,"y":569,"w":54,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":54,"h":282},
+	"sourceSize": {"w":54,"h":282}
+},
+"Silver_11.png":
+{
+	"frame": {"x":285,"y":285,"w":280,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":280,"h":282},
+	"sourceSize": {"w":280,"h":282}
+},
+"Silver_12.png":
+{
+	"frame": {"x":1,"y":1137,"w":252,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":252,"h":282},
+	"sourceSize": {"w":252,"h":282}
+},
+"Silver_13.png":
+{
+	"frame": {"x":255,"y":1421,"w":214,"h":283},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":214,"h":283},
+	"sourceSize": {"w":214,"h":283}
+},
+"Silver_14.png":
+{
+	"frame": {"x":851,"y":1,"w":131,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":131,"h":282},
+	"sourceSize": {"w":131,"h":282}
+},
+"Silver_15.png":
+{
+	"frame": {"x":941,"y":1138,"w":54,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":54,"h":282},
+	"sourceSize": {"w":54,"h":282}
+},
+"Silver_16.png":
+{
+	"frame": {"x":849,"y":285,"w":131,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":131,"h":282},
+	"sourceSize": {"w":131,"h":282}
+},
+"Silver_17.png":
+{
+	"frame": {"x":509,"y":1137,"w":214,"h":283},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":214,"h":283},
+	"sourceSize": {"w":214,"h":283}
+},
+"Silver_18.png":
+{
+	"frame": {"x":283,"y":853,"w":252,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":252,"h":282},
+	"sourceSize": {"w":252,"h":282}
+},
+"Silver_19.png":
+{
+	"frame": {"x":569,"y":1,"w":280,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":280,"h":282},
+	"sourceSize": {"w":280,"h":282}
+},
+"Silver_20.png":
+{
+	"frame": {"x":1,"y":1,"w":282,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":282,"h":282},
+	"sourceSize": {"w":282,"h":282}
+},
+"Silver_21.png":
+{
+	"frame": {"x":1,"y":285,"w":282,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":282,"h":282},
+	"sourceSize": {"w":282,"h":282}
+},
+"Silver_22.png":
+{
+	"frame": {"x":1,"y":853,"w":280,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":280,"h":282},
+	"sourceSize": {"w":280,"h":282}
+},
+"Silver_23.png":
+{
+	"frame": {"x":1,"y":1421,"w":252,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":252,"h":282},
+	"sourceSize": {"w":252,"h":282}
+},
+"Silver_24.png":
+{
+	"frame": {"x":471,"y":1422,"w":214,"h":283},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":214,"h":283},
+	"sourceSize": {"w":214,"h":283}
+},
+"Silver_25.png":
+{
+	"frame": {"x":819,"y":569,"w":131,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":131,"h":282},
+	"sourceSize": {"w":131,"h":282}
+},
+"Silver_26.png":
+{
+	"frame": {"x":903,"y":1423,"w":54,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":54,"h":282},
+	"sourceSize": {"w":54,"h":282}
+},
+"Silver_27.png":
+{
+	"frame": {"x":1,"y":1706,"w":131,"h":282},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":131,"h":282},
+	"sourceSize": {"w":131,"h":282}
+},
+"Silver_28.png":
+{
+	"frame": {"x":791,"y":853,"w":214,"h":283},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":214,"h":283},
+	"sourceSize": {"w":214,"h":283}
+},
+"Silver_29.png":
+{
+	"frame": {"x":255,"y":1137,"w":252,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":252,"h":282},
+	"sourceSize": {"w":252,"h":282}
+},
+"Silver_30.png":
+{
+	"frame": {"x":283,"y":569,"w":280,"h":282},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":280,"h":282},
+	"sourceSize": {"w":280,"h":282}
+}},
+"animations": {
+	"Silver": ["Silver_1.png","Silver_2.png","Silver_3.png","Silver_4.png","Silver_5.png","Silver_6.png","Silver_7.png","Silver_8.png","Silver_9.png","Silver_10.png","Silver_11.png","Silver_12.png","Silver_13.png","Silver_14.png","Silver_15.png","Silver_16.png","Silver_17.png","Silver_18.png","Silver_19.png","Silver_20.png","Silver_21.png","Silver_22.png","Silver_23.png","Silver_24.png","Silver_25.png","Silver_26.png","Silver_27.png","Silver_28.png","Silver_29.png","Silver_30.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "coin.png",
+	"format": "RGBA8888",
+	"size": {"w":1007,"h":1840},
+	"scale": "0.5",
+	"smartupdate": "$TexturePacker:SmartUpdate:a42d57cf8e84141e1380f4da54170f53:4f7b6c50497e101de6c3a950a6211c56:37dcde439de7f7292f96409a4c62c08e$"
+}
+}
