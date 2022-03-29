@@ -1,0 +1,33 @@
+{
+  "name": "relax_slot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "webpack-dev-server --open --config  webpack.dev.js",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "build": "webpack --config webpack.prod.js"
+  },
+  "author": "Petar Stajic",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.17.8",
+    "core-js": "^3.21.1",
+    "pixi.js": "^6.2.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.3",
+    "copy-webpack-plugin": "^5.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "imagemin-webpack-plugin": "^2.4.2",
+    "rimraf": "^3.0.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
+  }
+}
