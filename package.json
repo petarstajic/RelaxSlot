@@ -28,6 +28,9 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.3",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "eslint": "^6.8.0",
+    "prettier":"^1.9.1",
+    "prettier-eslint":"^10.1.0"
   }
 }
