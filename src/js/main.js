@@ -40,6 +40,8 @@ resizeHandler();
 
 document.body.appendChild(app.view);
 
+//function for responsive resize
+
 function resizeHandler() {
   const w = Math.max(window.innerWidth, document.documentElement.clientWidth);
   const h = Math.max(window.innerHeight, document.documentElement.clientHeight);
@@ -92,6 +94,8 @@ function onAssetsLoaded(loader, resources) {
 
   app.stage.addChild(coinsContainer);
 
+  //coins win animation
+
   function updateCoins(coins) {
     coins.y += coins.vy;
   }
@@ -101,29 +105,33 @@ function onAssetsLoaded(loader, resources) {
     coins.anchor.set(0.5);
     coins.update = updateCoins;
 
-    const speed = 600.0; // px per second
+    const speed = 800.0; // px per second
     coins.vy = speed / 60.0;
     coins.position.set(
       Math.random() * gameWidth,
-      -2000 + (Math.random() * gameHeight) / 3
+      -300 + (Math.random() * gameHeight) / 3
     );
     coins.anchor.set(0.5, 0.5);
     coins.scale.set(0.2);
 
     let i = Math.floor(Math.random() * 30);
-    const firePlay = () => {
+    const playCoins = () => {
       coins.gotoAndStop(i);
       i++;
       if (i == 30) i = 0; // At the last frame, go back to the first frame
     };
-    setInterval(firePlay, 40);
+    setInterval(playCoins, 40);
 
     return coins;
   }
 
-  const generateSpinner = position => {
+  //spinner win animation
+  function generateSpinner() {
     const container = new PIXI.Container();
-    container.position = position;
+    container.position = new PIXI.Point(
+      reelContainer.x,
+      reelContainer.y + SYMBOL_SIZE * 0.7
+    );
     game.addChild(container);
 
     const halfCircle = new PIXI.Graphics();
@@ -142,16 +150,13 @@ function onAssetsLoaded(loader, resources) {
     container.addChild(rectangle);
     container.addChild(halfCircle);
 
-    let phase = 0;
-
-    return delta => {
-      // Update phase
-      phase += delta / 6;
-      phase %= Math.PI * 2;
-
-      halfCircle.rotation = phase;
-    };
-  };
+    return halfCircle;
+  }
+  //spinner win animation ratation update funciton
+  function rotateSpiner(circle, delta) {
+    circle.rotation += delta / 6;
+    circle.rotation %= Math.PI * 2;
+  }
 
   const reelContainer = new PIXI.Container();
 
@@ -191,12 +196,15 @@ function onAssetsLoaded(loader, resources) {
   }
   app.stage.addChild(reelContainer);
 
+  //container for spinnr animation
   let game = new PIXI.Container();
   app.stage.addChild(game);
 
   const margin = (600 - SYMBOL_SIZE * 3) / 2;
   reelContainer.y = margin - SYMBOL_SIZE / 1.5;
   reelContainer.x = (600 - reelContainer.width) / 2;
+
+  const circle = generateSpinner();
 
   const reelMask = new PIXI.Graphics();
   app.stage.addChild(reelMask);
@@ -214,6 +222,7 @@ function onAssetsLoaded(loader, resources) {
 
   app.stage.addChild(coinsContainer);
 
+  //buttons class objects
   const betButton = new GameButton(50, 220, "BET\nONE", 0x76b5c5, 1);
 
   interactiveElements.push(betButton);
@@ -228,6 +237,7 @@ function onAssetsLoaded(loader, resources) {
 
   app.stage.addChild(...interactiveElements);
 
+  //text class objects
   const creditsText = new TextField(215, 180, "CREDITS", `${state.credit}`);
 
   app.stage.addChild(creditsText);
@@ -236,7 +246,7 @@ function onAssetsLoaded(loader, resources) {
 
   app.stage.addChild(betText);
 
-  // Set the interactivity.
+  // Set the interactivity for buttons objects
   interactiveElements.forEach(e => {
     e.interactive = true;
     e.buttonMode = true;
@@ -271,23 +281,17 @@ function onAssetsLoaded(loader, resources) {
 
   let running = false;
 
-  const onTick = [
-    generateSpinner(
-      new PIXI.Point(reelContainer.x, reelContainer.y + SYMBOL_SIZE * 0.7)
-    )
-  ];
-
   game.visible = false;
 
-  // Function to start playing.
+  // Function to start playing
   function startPlay() {
     if (running || state.credit === 0) return;
     running = true;
-
+    //spiner container visibility
     if (game.visible) {
       game.visible = false;
     }
-
+    //cheat tool check for predefined winlines and cheat screen
     if (cheatOn) {
       const symbolIndexes = [0, 1, 2, 3];
 
@@ -308,6 +312,7 @@ function onAssetsLoaded(loader, resources) {
       console.log(state.cheatReels);
     }
 
+    //targeted screen symbols implementation
     for (let i = 0; i < reels.length; i++) {
       if (!reels[i]) {
         return;
@@ -334,7 +339,7 @@ function onAssetsLoaded(loader, resources) {
 
       state.reelSymbols[i] = stateSymbol.name;
 
-      //tween animation for final screen symbols
+      //animation for final screen symbols
       let time = (i + 1) * 0.7;
 
       let backout = 0.8 - (i + 1) / 10;
@@ -351,21 +356,6 @@ function onAssetsLoaded(loader, resources) {
             state.reelSymbols[i] = r.symbols[num].name;
             console.log(r.symbols[num].name);
           }
-
-          if (
-            i == reels.length - 1 &&
-            (state.reelSymbols[0] === state.reelSymbols[1] ||
-              state.reelSymbols[0] === state.reelSymbols[2] ||
-              state.reelSymbols[1] === state.reelSymbols[2])
-          ) {
-            //setTimeout(() => {
-            game.visible = true;
-            //}, 1000);
-
-            for (let i = 0; i < state.bet; i++) {
-              coinsContainer.addChild(createCoins());
-            }
-          }
         },
 
         onComplete: () => {
@@ -378,11 +368,17 @@ function onAssetsLoaded(loader, resources) {
             ) {
               console.log("WIN!!!");
 
+              game.visible = true;
+              //coins animation
+              for (let i = 0; i < state.bet; i++) {
+                coinsContainer.addChild(createCoins());
+              }
+
               state.credit += state.bet;
             } else {
               state.credit -= state.bet;
             }
-
+            //text update
             creditsText.setText(`${state.credit}`);
             betText.setText(setBet());
           }
@@ -390,20 +386,18 @@ function onAssetsLoaded(loader, resources) {
       });
     }
 
-    //state.credit -= state.bet;
-    // creditsText.setText(`${state.credit}`);
-    // betText.setText(setBet());
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
   }
 
   app.ticker.add(delta => {
     coinsContainer.children.forEach(updateCoins);
-
-    // Update the slots.
-    if (onTick[0]) {
-      onTick.forEach(cb => {
-        cb(delta);
-      });
-    }
+    //spinner rotation cycle update
+    rotateSpiner(circle, delta);
 
     for (let i = 0; i < reels.length; i++) {
       const r = reels[i];
@@ -419,7 +413,6 @@ function onAssetsLoaded(loader, resources) {
         s.y = ((r.position + j) % r.symbols.length) * SYMBOL_SIZE - SYMBOL_SIZE;
         if (s.y < 0 && prevy > SYMBOL_SIZE) {
           // Detect going over and swap a texture.
-          // This should in proper product be determined from some logical reel.
           s.scale.x = s.scale.y = Math.min(
             SYMBOL_SIZE / s.texture.width,
             SYMBOL_SIZE / s.texture.height
@@ -429,11 +422,4 @@ function onAssetsLoaded(loader, resources) {
       }
     }
   });
-
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
 }
