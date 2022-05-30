@@ -8,9 +8,7 @@ export default class GameButton extends PIXI.Graphics {
     this.text = text;
     this.color = color;
     this.scaleButton = scaleButton;
-  }
 
-  makeButton() {
     const style = new PIXI.TextStyle({
       fontFamily: "Arial",
       fontSize: 25,
@@ -52,7 +50,5 @@ export default class GameButton extends PIXI.Graphics {
     this.on("pointerup", () => {
       this.alpha = 1;
     });
-
-    return this;
   }
 }

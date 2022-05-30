@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import GameButton from "./button";
 import TextField from "./textField";
+import gsap from "gsap";
 
 const gameWidth = 600;
 const gameHeight = 600;
@@ -12,6 +13,28 @@ const app = new PIXI.Application({
   resolution: 3,
   autoDensity: true
 });
+
+const state = {
+  reelSymbols: [],
+  credit: 5,
+  bet: 1,
+  betMax: 5,
+  completeReels: [[], [], []],
+  cheatReels: [0, 0, 0],
+  lastWasWin: true,
+  winlines: [
+    [1, 1, 1],
+    [1, 1, 0],
+    [1, 0, 1],
+    [0, 1, 1]
+  ],
+  nums: [],
+  targets: []
+};
+
+const cheatOn = true;
+
+const reels = [];
 
 resizeHandler();
 
@@ -54,21 +77,9 @@ function onAssetsLoaded(loader, resources) {
     PIXI.Texture.from("assets/seven.png")
   ];
 
-  let state = {
-    reelSymbols: [],
-    credit: 5,
-    bet: 1,
-    betMax: 5,
-    completeReels: {
-      0: [],
-      1: [],
-      2: []
-    },
-    counter: 0
-  };
+  const symbols = ["clover", "crown", "diamond", "seven"];
 
   const textures = [];
-  const coinsContainer = new PIXI.Container();
 
   for (let i = 0; i < 30; i++) {
     const framekey = `Silver_${i + 1}.png`;
@@ -76,6 +87,10 @@ function onAssetsLoaded(loader, resources) {
     const time = resources.spritesheet.data.frames[framekey].duration;
     textures.push({ texture, time });
   }
+
+  const coinsContainer = new PIXI.Container();
+
+  app.stage.addChild(coinsContainer);
 
   function updateCoins(coins) {
     coins.y += coins.vy;
@@ -138,10 +153,8 @@ function onAssetsLoaded(loader, resources) {
     };
   };
 
-  // Build the reels
-  const reels = [];
-
   const reelContainer = new PIXI.Container();
+
   for (let i = 0; i < 3; i++) {
     const rc = new PIXI.Container();
     rc.x = i * REEL_WIDTH;
@@ -161,9 +174,9 @@ function onAssetsLoaded(loader, resources) {
 
     // Build the symbols
     for (let j = 0; j < 12; j++) {
-      const symbol = new PIXI.Sprite(
-        slotTextures[Math.floor(Math.random() * slotTextures.length)]
-      );
+      const rand = Math.floor(Math.random() * slotTextures.length);
+      const symbol = new PIXI.Sprite(slotTextures[rand]);
+      symbol.name = symbols[rand];
       // Scale the symbol to fit symbol area.
       symbol.y = j * SYMBOL_SIZE;
       symbol.scale.x = symbol.scale.y = Math.min(
@@ -197,31 +210,30 @@ function onAssetsLoaded(loader, resources) {
   reelMask.endFill();
   reelContainer.mask = reelMask;
 
-  let onTick = [];
   let interactiveElements = [];
 
   app.stage.addChild(coinsContainer);
 
   const betButton = new GameButton(50, 220, "BET\nONE", 0x76b5c5, 1);
-  betButton.makeButton();
+
   interactiveElements.push(betButton);
 
   const maxBetButton = new GameButton(100, 220, "BET\nMAX", 0x76b5c5, 1);
-  maxBetButton.makeButton();
+
   interactiveElements.push(maxBetButton);
 
   const playButton = new GameButton(145, 172, "SPIN", 0x85c88a, 1.6);
-  playButton.makeButton();
+
   interactiveElements.push(playButton);
 
   app.stage.addChild(...interactiveElements);
 
   const creditsText = new TextField(215, 180, "CREDITS", `${state.credit}`);
-  creditsText.makeTextField();
+
   app.stage.addChild(creditsText);
 
   const betText = new TextField(190, 180, "BET", `${state.bet}`);
-  betText.makeTextField();
+
   app.stage.addChild(betText);
 
   // Set the interactivity.
@@ -259,144 +271,133 @@ function onAssetsLoaded(loader, resources) {
 
   let running = false;
 
+  const onTick = [
+    generateSpinner(
+      new PIXI.Point(reelContainer.x, reelContainer.y + SYMBOL_SIZE * 0.7)
+    )
+  ];
+
+  game.visible = false;
+
   // Function to start playing.
   function startPlay() {
-    if (running) return;
+    if (running || state.credit === 0) return;
     running = true;
-    state.counter++;
-    let time;
 
-    if (onTick[0]) {
-      onTick[0] = null;
-      app.stage.removeChild(game);
-      game = new PIXI.Container();
-      app.stage.addChildAt(game, 1);
+    if (game.visible) {
+      game.visible = false;
+    }
+
+    if (cheatOn) {
+      const symbolIndexes = [0, 1, 2, 3];
+
+      shuffleArray(symbolIndexes);
+
+      state.lastWasWin = !state.lastWasWin;
+
+      if (state.lastWasWin) {
+        state.cheatReels = symbolIndexes.slice(0, 3);
+      } else {
+        let randomWin =
+          state.winlines[Math.floor(Math.random() * state.winlines.length)];
+        for (let i = 0; i < randomWin.length; i++) {
+          state.cheatReels[i] = symbolIndexes[randomWin[i]];
+        }
+      }
+
+      console.log(state.cheatReels);
     }
 
     for (let i = 0; i < reels.length; i++) {
       if (!reels[i]) {
         return;
       }
+
       const r = reels[i];
       const extra = Math.floor(Math.random() * 3);
-      // code from pixi reels example need to be Math.round-ed because of random decimal output probably caused by .position method
-      // this probably can cause some other issues => didn't have time to test it thoroughly :)
-      let target = Math.round(r.position + 10 + i * 15 + extra);
-      time = 2500 + i * 600 + extra * 600;
 
-      // additional task requirements in code below
-      // manipulating reels to win every second round
+      let target = Math.round(r.position + (i + 1) * 14 + extra);
 
-      function changeTarget(target, i, j) {
-        //locating symbols on screen using target number
-        let num =
-          reels[i].symbols.length - (target % reels[i].symbols.length) + j;
-        num =
-          num < reels[i].symbols.length ? num : num - reels[i].symbols.length;
-        //pushing all 12 reel symbols from screen to state
-        let stateSymbol = reels[i].symbols[
-          num
-        ]._texture.textureCacheIds.toString();
-        state.completeReels[i][j] = stateSymbol.substring(
-          7,
-          stateSymbol.length - 4
-        );
+      let num = target % r.symbols.length;
+
+      if (num === 2) {
+        num = 0;
+      } else if (num === 1) {
+        num = 1;
+      } else if (num === 0) {
+        num = 2;
+      } else {
+        num = 14 - num;
       }
 
-      //loop throw every reel
-      for (let j = 0; j < reels[i].symbols.length; j++) {
-        //getting reels screen
-        changeTarget(target, i, j);
-        //checking for third symbol on reel => the one on the game screen
-        if (j == 2) {
-          //first loop to check every 2nd round for non-win situation and to increase target number (change symbol on the screen) in case the conditions are not fulfilled
-          if (state.counter % 2 == 0) {
-            while (
-              (i != 0 &&
-                state.completeReels[i][j] == state.completeReels[i - 1][j]) ||
-              (i == 2 &&
-                state.completeReels[i][j] == state.completeReels[i - 2][j])
-            ) {
-              target++;
-              changeTarget(target, i, j);
-            }
-            //second loop to check every other round for win situation and increase symbols target to match all conditions
-          } else {
-            while (
-              i == 2 &&
-              state.completeReels[0][j] !== state.completeReels[1][j] &&
-              state.completeReels[i][j] !== state.completeReels[i - 1][j] &&
-              state.completeReels[i][j] !== state.completeReels[i - 2][j]
-            ) {
-              target++;
-              changeTarget(target, i, j);
-            }
+      let stateSymbol = r.symbols[num];
+
+      state.reelSymbols[i] = stateSymbol.name;
+
+      //tween animation for final screen symbols
+      let time = (i + 1) * 0.7;
+
+      let backout = 0.8 - (i + 1) / 10;
+
+      gsap.to(r, {
+        position: target,
+        duration: time,
+        ease: `back.out(${backout})`,
+        onStart: () => {
+          if (cheatOn) {
+            r.symbols[num].texture = slotTextures[state.cheatReels[i]];
+
+            r.symbols[num].name = symbols[state.cheatReels[i]];
+            state.reelSymbols[i] = r.symbols[num].name;
+            console.log(r.symbols[num].name);
           }
 
-          state.reelSymbols[i] = state.completeReels[i][j];
+          if (
+            i == reels.length - 1 &&
+            (state.reelSymbols[0] === state.reelSymbols[1] ||
+              state.reelSymbols[0] === state.reelSymbols[2] ||
+              state.reelSymbols[1] === state.reelSymbols[2])
+          ) {
+            //setTimeout(() => {
+            game.visible = true;
+            //}, 1000);
+
+            for (let i = 0; i < state.bet; i++) {
+              coinsContainer.addChild(createCoins());
+            }
+          }
+        },
+
+        onComplete: () => {
+          if (i === reels.length - 1) {
+            running = false;
+            if (
+              state.reelSymbols[0] === state.reelSymbols[1] ||
+              state.reelSymbols[0] === state.reelSymbols[2] ||
+              state.reelSymbols[1] === state.reelSymbols[2]
+            ) {
+              console.log("WIN!!!");
+
+              state.credit += state.bet;
+            } else {
+              state.credit -= state.bet;
+            }
+
+            creditsText.setText(`${state.credit}`);
+            betText.setText(setBet());
+          }
         }
-      }
-      //tween animation for final screen symbols
-      tweenTo(
-        r,
-        "position",
-        target,
-        time,
-        backout(0.4),
-        null,
-        i === reels.length - 1 ? reelsComplete : null
-      );
-
-      console.log("simbol ", i + 1, " :", state.reelSymbols[i]);
+      });
     }
 
-    if (
-      !state.reelSymbols[0].localeCompare(state.reelSymbols[1]) ||
-      !state.reelSymbols[0].localeCompare(state.reelSymbols[2]) ||
-      !state.reelSymbols[1].localeCompare(state.reelSymbols[2])
-    ) {
-      setTimeout(() => {
-        onTick = [
-          generateSpinner(
-            new PIXI.Point(reelContainer.x, reelContainer.y + SYMBOL_SIZE * 0.7)
-          )
-        ];
-      }, time / 3);
-
-      console.log("WIN!!!");
-
-      for (let i = 0; i < state.bet; i++) {
-        coinsContainer.addChild(createCoins());
-      }
-
-      state.credit += state.bet;
-    } else {
-      state.credit - state.bet <= 0
-        ? setTimeout(() => {
-            state.credit -= state.bet;
-          }, time)
-        : (state.credit -= state.bet);
-    }
-    console.log("credit = ", state.credit);
-    setTimeout(() => {
-      creditsText.setText(`${state.credit}`);
-      betText.setText(setBet());
-    }, time);
+    //state.credit -= state.bet;
+    // creditsText.setText(`${state.credit}`);
+    // betText.setText(setBet());
   }
 
-  // Reels done handler.
-  function reelsComplete() {
-    running = false;
-  }
-
-  // Listen for animate update.
   app.ticker.add(delta => {
-    if (state.credit <= 0) {
-      running = true;
-      return;
-    }
-
     coinsContainer.children.forEach(updateCoins);
+
     // Update the slots.
     if (onTick[0]) {
       onTick.forEach(cb => {
@@ -428,57 +429,11 @@ function onAssetsLoaded(loader, resources) {
       }
     }
   });
-}
 
-// Very simple tweening utility function. This should be replaced with a proper tweening library in a real product.
-const tweening = [];
-function tweenTo(object, property, target, time, easing, onchange, oncomplete) {
-  const tween = {
-    object,
-    property,
-    propertyBeginValue: object[property],
-    target,
-    easing,
-    time,
-    change: onchange,
-    complete: oncomplete,
-    start: Date.now()
-  };
-
-  tweening.push(tween);
-  return tween;
-}
-// Listen for animate update.
-app.ticker.add(delta => {
-  const now = Date.now();
-  const remove = [];
-  for (let i = 0; i < tweening.length; i++) {
-    const t = tweening[i];
-    const phase = Math.min(1, (now - t.start) / t.time);
-
-    t.object[t.property] = lerp(
-      t.propertyBeginValue,
-      t.target,
-      t.easing(phase)
-    );
-    if (t.change) t.change(t);
-    if (phase === 1) {
-      t.object[t.property] = t.target;
-      if (t.complete) t.complete(t);
-      remove.push(t);
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
   }
-  for (let i = 0; i < remove.length; i++) {
-    tweening.splice(tweening.indexOf(remove[i]), 1);
-  }
-});
-
-// Basic lerp funtion.
-function lerp(a1, a2, t) {
-  return a1 * (1 - t) + a2 * t;
-}
-
-// Backout function from tweenjs.
-function backout(amount) {
-  return t => --t * t * ((amount + 1) * t + amount) + 1;
 }

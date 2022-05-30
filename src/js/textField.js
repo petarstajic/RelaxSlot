@@ -7,9 +7,7 @@ export default class TextField extends PIXI.Graphics {
     this.y = y;
     this.decriptionText = decriptionText;
     this.dynamicText = dynamicText;
-  }
 
-  makeTextField() {
     const styleDescription = new PIXI.TextStyle({
       fontFamily: "Arial",
       fontSize: 17,
@@ -60,11 +58,8 @@ export default class TextField extends PIXI.Graphics {
     this.dynamicText.y = this.y + (height - this.dynamicText.height) / 2;
 
     this.addChild(this.dynamicText);
-
-    return this;
   }
-
   setText(text) {
-    return (this.dynamicText.text = text);
+    this.dynamicText.text = text;
   }
 }
