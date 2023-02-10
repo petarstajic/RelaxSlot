@@ -1,0 +1,43 @@
+{
+  "name": "relax_slot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "webpack-dev-server --open --config  webpack.dev.js",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "build": "webpack --config webpack.prod.js"
+  },
+  "author": "Petar Stajic",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.17.8",
+    "core-js": "^3.21.1",
+    "css": "^3.0.0",
+    "gsap": "^3.10.4",
+    "lib-font": "^2.4.0",
+    "loader": "^2.1.1",
+    "pixi-webfont-loader": "^1.0.2",
+    "pixi.js": "6.2.2",
+    "style-loader": "^3.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.3",
+    "copy-webpack-plugin": "^5.1.1",
+    "css-loader": "^6.7.3",
+    "eslint": "^6.8.0",
+    "html-webpack-plugin": "^3.2.0",
+    "imagemin-webpack-plugin": "^2.4.2",
+    "prettier": "^1.9.1",
+    "prettier-eslint": "^10.1.0",
+    "rimraf": "^3.0.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
+  }
+}
