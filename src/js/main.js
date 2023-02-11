@@ -205,21 +205,27 @@ function onAssetsLoaded(loader, resources) {
   });
 
   playButton.addListener("pointerdown", () => {
-    startPlay();
-    state.credit -= state.bet;
-    creditsText.setText(`${state.credit}`);
+    if (!running && state.credit >= state.bet) {
+      startPlay();
+      state.credit -= state.bet;
+      creditsText.setText(`${state.credit}`);
+    }
   });
   betPlusButton.addListener("pointerdown", () => {
-    if (state.bet < state.credit) {
-      state.bet++;
-    } else state.bet = state.credit;
-    betText.setText(state.bet);
+    if (!running) {
+      if (state.bet < state.credit) {
+        state.bet++;
+      } else state.bet = state.credit;
+      betText.setText(state.bet);
+    }
   });
   betMinusButton.addListener("pointerdown", () => {
-    if (state.bet > 1) {
-      state.bet--;
-    } else state.bet = 1;
-    betText.setText(state.bet);
+    if (!running) {
+      if (state.bet > 1) {
+        state.bet--;
+      } else state.bet = 1;
+      betText.setText(state.bet);
+    }
   });
 
   function setBet() {
